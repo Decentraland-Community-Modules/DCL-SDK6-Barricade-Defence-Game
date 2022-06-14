@@ -164,6 +164,7 @@ export class UnitObject extends Entity
     {
         //setup object
         super();
+
         //this.addComponent(new GLTFShape('models/Enemy.glb'));
         this.addComponent(new GLTFShape('models/zombie.glb'));
         this.addComponent(new Transform

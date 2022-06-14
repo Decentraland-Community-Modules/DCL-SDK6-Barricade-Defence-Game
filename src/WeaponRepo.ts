@@ -37,7 +37,7 @@ export class WeaponRepo
         weapon.Index = "1";
         weapon.Name = "Heavy Pistol";
         weapon.Desc = "Slow rate of fire, but massive damage";
-        weapon.Cost = 225;
+        weapon.Cost = 125;
         weapon.ShotType = 0;
         weapon.ShotDamage = 45;
         weapon.ShotROF = 0.25;

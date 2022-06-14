@@ -33,7 +33,7 @@ export class WaveManager implements ISystem
     wave_active:boolean = false;
     wave_current:number = 0;
     wave_max:number = 10;
-    wave_enemy_base:number = 1;
+    wave_enemy_base:number = 3;
     wave_enemy_growth:number = 4;
     enemy_count:number = 0; //number of enemies to create in this wave
     enemy_current:number = 0; //number of enemies alive
@@ -199,8 +199,9 @@ export class WaveManager implements ISystem
     {
         let unit:UnitAI;
         this.enemy_current++;
+        //TODO: currently there is an issue with reusing entities, scene uuids seem to double back onto already dead enemies
         //a dead unit exsists, use it
-        if(this.unitList_DEAD.size() > 0)
+        /*if(this.unitList_DEAD.size() > 0)
         {
             unit = this.unitList_DEAD.get(0);
             this.unitList_DEAD.remove(unit);
@@ -208,18 +209,21 @@ export class WaveManager implements ISystem
         //create new unit to use
         else
         {
-            //create unit
-            unit = new UnitAI(this.nextIndex++);
-            //add to collections
-            this.unitList.add(unit);
-            this.unitDict.add(unit.index, unit);
-        }
+        }*/
+        //create unit
+        unit = new UnitAI(++this.nextIndex);
+        //add to collections
+        this.unitList.add(unit);
+        this.unitDict.add(unit.index, unit);
+
+        unit.avatarEntity.name = "enemy_"+this.nextIndex;
+        this.unitDictID.add(unit.avatarEntity.name, unit);
+        
         unit.healthCurrent = this.gameManager.difficulty_mod_health[this.gameManager.difficulty] * 100;
 
         //add unit to engine
         engine.addSystem(unit);
         engine.addEntity(unit.avatarEntity);
-        this.unitDictID.add(unit.avatarEntity.uuid, unit);
 
         //start unit on 
         unit.avatarEntity.getComponent(Animator).getClip('Attacking').stop();
@@ -252,7 +256,7 @@ export class WaveManager implements ISystem
 
         //provide points
         ScoringManager.INSTANCE.player_kills++;
-        ScoringManager.INSTANCE.player_money += this.gameManager.difficulty_mod_points[this.gameManager.difficulty] * 5;
+        ScoringManager.INSTANCE.player_money += this.gameManager.difficulty_mod_points[this.gameManager.difficulty] * Math.floor((Math.random()*10) + 10);
         ScoringManager.INSTANCE.updateUiObject();
 
         //update ui

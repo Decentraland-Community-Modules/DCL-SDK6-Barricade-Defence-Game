@@ -77,10 +77,10 @@ export class WaypointManager extends Entity
         this.createWaypoint("2_5", 27.5, 40);
         this.createWaypoint("2_6", 31, 35.5);
         //  layer 3: spawn points
-        this.createWaypoint("3_0", 7, 39, true);
-        this.createWaypoint("3_1", 15.5, 54, true);
-        this.createWaypoint("3_5", 32.5, 54, true);
-        this.createWaypoint("3_6", 43, 39, true);
+        this.createWaypoint("3_0", 13, 41, true);
+        this.createWaypoint("3_1", 16.5, 54, true);
+        this.createWaypoint("3_5", 31.5, 54, true);
+        this.createWaypoint("3_6", 35, 41, true);
         
     }
 

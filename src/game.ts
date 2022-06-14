@@ -38,6 +38,9 @@
       -weapon damage numbers pop up
       -weapon firing modes (semi/full/burst)
       -weapon add reload button
+      -no mechanism to stop players from running into arena, currently just locks them into 
+        arena invalidating their session. tried trigger-box, but seems broken
+
 
     Author: Alex Pazder, thecryptotrader69@gmail.com
 */

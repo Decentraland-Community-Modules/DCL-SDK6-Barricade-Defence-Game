@@ -4,7 +4,7 @@
 import { getDecentralandTime } from '@decentraland/EnvironmentAPI';
 import * as utils from '../node_modules/@dcl/ecs-scene-utils/dist/index.js'
 //import * as utils from '../node_modules/decentraland-ecs/dist/index' //alternative legacy
-import type { GameManager } from "./GameManager";
+import { GameManager } from "./GameManager";
 import { UnitAI, UnitObject } from './UnitAI.js';
 import { WaveManager } from './WaveManager.js';
 import { Weapon, WeaponRepo } from './WeaponRepo.js';
@@ -174,45 +174,53 @@ export class FiringManager implements ISystem
         //input controller: left click -> fire
         this.input_controller.subscribe('BUTTON_DOWN', ActionButton.POINTER, true, (e) => 
         {
-            //ensure weapon is not reloading or over rate of fire and weapon has bullets
-            if (this.weapon_firing_timestamp <= 0 && this.weapon_reload_timestamp <= 0) 
+            if(GameManager.INSTANCE.game_state == 2)
             {
-                if(this.weapon_def.AmmoRemaining > 0)
+                //ensure weapon is not reloading or over rate of fire and weapon has bullets
+                if (this.weapon_firing_timestamp <= 0 && this.weapon_reload_timestamp <= 0) 
                 {
-                    //play gunshot sound
-                    this.sound_gunshot.getComponent(AudioSource).playOnce();
-                    this.weapon_def.AmmoRemaining--;
-                    this.weapon_firing_timestamp = this.weapon_def.ShotROF;
-
-                    //if an entity was hit
-                    if(e.hit != undefined)
+                    if(this.weapon_def.AmmoRemaining > 0)
                     {
-                        if (engine.entities[e.hit.entityId] != undefined) 
-                        {
-                            //if hit entity is an enemy
-                            if(WaveManager.INSTANCE.unitDictID.containsKey(e.hit.entityId))
-                            {
-                                //deal damage
-                                WaveManager.INSTANCE.unitDictID.getItem(e.hit.entityId).TakeDamage(this.weapon_def.ShotDamage);
+                        //play gunshot sound
+                        this.sound_gunshot.getComponent(AudioSource).playOnce();
+                        this.weapon_def.AmmoRemaining--;
+                        this.weapon_firing_timestamp = this.weapon_def.ShotROF;
 
-                                //grab position and create blood marker
-                                //const targetPosition = engine.entities[e.hit.entityId].getComponent(Transform).position
-                                //const relativePosition = e.hit.hitPoint.subtract(targetPosition)
+                        //if an entity was hit
+                        if(e.hit != undefined)
+                        {
+                            if (engine.entities[e.hit.entityId] != undefined) 
+                            {
+                                log((engine.entities[e.hit.entityId] as Entity).name);
+                                let key = (engine.entities[e.hit.entityId] as Entity).name;
+                                if(key != undefined)
+                                {
+                                    //if hit entity is an enemy
+                                    if(WaveManager.INSTANCE.unitDictID.containsKey(key))
+                                    {
+                                        //deal damage
+                                        WaveManager.INSTANCE.unitDictID.getItem(key).TakeDamage(this.weapon_def.ShotDamage);
+
+                                        //grab position and create blood marker
+                                        //const targetPosition = engine.entities[e.hit.entityId].getComponent(Transform).position
+                                        //const relativePosition = e.hit.hitPoint.subtract(targetPosition)
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                else
+                    else
+                    {
+                        this.ReloadStart();
+                    }
+                    
+                    //update object
+                    this.updateUiObject();
+                } 
+                else 
                 {
-                    this.ReloadStart();
+                    this.sound_gunfail.getComponent(AudioSource).playOnce()
                 }
-                
-                //update object
-                this.updateUiObject();
-            } 
-            else 
-            {
-                this.sound_gunfail.getComponent(AudioSource).playOnce()
             }
         });
 

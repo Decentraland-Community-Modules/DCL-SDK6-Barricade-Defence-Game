@@ -500,13 +500,6 @@ export class GameManager extends Entity
     if(this.IsDebugging){ log("game state has changed to: "+state.toString()+"!"); }
   }
 
-  //begins the game, resetting all player stats and funds
-  public StartGame()
-  {
-    //start game waves
-    this.SetGameState(2);
-  }
-
   //ends the game, creation of final report depends on victory status
   public EndGame(victory:boolean)
   {
